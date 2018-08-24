@@ -26,10 +26,10 @@ public class MainActivity extends AppCompatActivity {
     Button mModoruButton;
     Button mSaiseiButton;
     Timer mTimer;
-    double mTimerSec = 0.0;
+    Handler mHandler = new Handler();
+    //double mTimerSec = 0.0;
     Integer cursorCount = 0;
     Integer cursorIndex = 0;
-    Handler mHandler = new Handler();
 
     private static final int PERMISSIONS_REQUEST_CODE = 100;
 
@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 // 許可されている
                 cursorIndex = 0;
                 getContentsInfo(1);
-                cursorIndex += 1;
+                if ( cursorCount > 0 )
+                    cursorIndex += 1;
             } else {
                 // 許可されていないので許可ダイアログを表示する
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
@@ -62,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
 
             cursorIndex = 0;
             getContentsInfo(1);
-            cursorIndex += 1;
+            if ( cursorCount > 0 )
+                cursorIndex += 1;
         }
 
         mSusumuButton.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         mSaiseiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTimerSec = 0.0;
+                //mTimerSec = 0.0;
 
                 if ( mSaiseiButton.getText().equals("再生") ) {
                     mSusumuButton.setEnabled(false);
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                         mTimer.schedule(new TimerTask() {
                             @Override
                             public void run() {
-                                mTimerSec += 0.1;
+                                //mTimerSec += 0.1;
 
                                 mHandler.post(new Runnable() {
                                     @Override
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                         }, 100, 2000);
                     }
                 } else if ( mSaiseiButton.getText().equals("停止") ) {
-                    mTimerSec = 0.0;
+                    //mTimerSec = 0.0;
                     mSusumuButton.setEnabled(true);
                     mModoruButton.setEnabled(true);
 
@@ -136,7 +138,13 @@ public class MainActivity extends AppCompatActivity {
 
                     cursorIndex = 0;
                     getContentsInfo(1);
-                    cursorIndex += 1;
+                    if ( cursorCount > 0 )
+                        cursorIndex += 1;
+                } else {
+                    // DENYを選択した時
+                    mSusumuButton.setEnabled(false);
+                    mModoruButton.setEnabled(false);
+                    mSaiseiButton.setEnabled(false);
                 }
                 break;
             default:
@@ -160,8 +168,17 @@ public class MainActivity extends AppCompatActivity {
 
         // 画像の情報を取得する
         if (cursorIndex == 0) {
-            cursorCount = cursor.getCount();
-            Log.d("Contents", ":[" + cursorCount.toString() + "]");
+            if ( cursor != null ) {
+                cursorCount = cursor.getCount();
+                Log.d("Contents", ":[" + cursorCount.toString() + "]");
+            } else {
+                cursorCount = 0;
+/*
+                mSusumuButton.setEnabled(false);
+                mModoruButton.setEnabled(false);
+                mSaiseiButton.setEnabled(false);
+*/
+            }
 
             if (cursorCount > 0)
                 cursor.moveToFirst();

@@ -25,18 +25,21 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="進む"
+            android:textSize="20dp"
             android:id="@+id/button1"/>
 
         <Button
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="戻る"
+            android:textSize="20dp"
             android:id="@+id/button2"/>
 
         <Button
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="再生"
+            android:textSize="20dp"
             android:id="@+id/button3"/>
     </LinearLayout>
 </RelativeLayout>
